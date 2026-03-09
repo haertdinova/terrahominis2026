@@ -15,7 +15,8 @@
         <div class="main" id="mainContent">
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
             <div class="section-date" id="sectionDate"></div>
-            <div class="section-location" id="sectionLocation"></div> <!-- НОВОЕ: общая локация -->
+            <div class="section-location" id="sectionLocation"></div>
+            <div class="section-block-time" id="sectionBlockTime"></div> <!-- для общего времени (только открытие) -->
             <div class="section-description" id="sectionDesc"></div>
             <div class="talks-list" id="talksList"></div>
         </div>
@@ -32,7 +33,8 @@
             const sectionsListEl = document.getElementById('sectionsList');
             const sectionTitleEl = document.getElementById('sectionTitle');
             const sectionDateEl = document.getElementById('sectionDate');
-            const sectionLocationEl = document.getElementById('sectionLocation'); // НОВОЕ
+            const sectionLocationEl = document.getElementById('sectionLocation');
+            const sectionBlockTimeEl = document.getElementById('sectionBlockTime');
             const sectionDescEl = document.getElementById('sectionDesc');
             const talksListEl = document.getElementById('talksList');
 
@@ -42,7 +44,14 @@
 
                 sectionTitleEl.textContent = section.name;
                 sectionDateEl.textContent = section.date;
-                sectionLocationEl.textContent = section.location; // Устанавливаем локацию
+                sectionLocationEl.textContent = section.location;
+                // Отображаем blockTime, если есть
+                if (section.blockTime) {
+                    sectionBlockTimeEl.textContent = `⏰ ${section.blockTime}`;
+                    sectionBlockTimeEl.style.display = 'block';
+                } else {
+                    sectionBlockTimeEl.style.display = 'none';
+                }
                 sectionDescEl.textContent = section.description;
 
                 const sectionTalks = talks.filter(t => t.sectionId === sectionId);
@@ -51,14 +60,15 @@
                     talksListEl.innerHTML = '<div class="placeholder">Пока нет докладов в этой секции</div>';
                 } else {
                     talksListEl.innerHTML = sectionTalks.map(talk => {
+                        // Для открытия время уже показано общим блоком, поэтому не выводим в карточке
+                        const timeHtml = (section.blockTime || !talk.time) ? '' : `<div class="talk-time">⏰ ${talk.time}</div>`;
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                        const roomHtml = talk.room ? `<div class="talk-room">📍 ${talk.room}</div>` : '';
+                        // room полностью убрали
                         return `
                             <div class="talk-card">
-                                <div class="talk-time">⏰ ${talk.time}</div>
+                                ${timeHtml}
                                 <div class="talk-title">${talk.title}</div>
                                 ${speakerHtml}
-                                ${roomHtml}
                             </div>
                         `;
                     }).join('');
