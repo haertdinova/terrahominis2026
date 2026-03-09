@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Программа конференции TERRA HOMINIS – 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <div class="sidebar">
+            <h2>📋 Секции</h2>
+            <ul class="sections-list" id="sectionsList"></ul>
+        </div>
+        <div class="main" id="mainContent">
+            <div class="section-title" id="sectionTitle">Выберите секцию</div>
+            <div class="section-date" id="sectionDate"></div>
+            <div class="section-location" id="sectionLocation"></div>
+            <div class="section-block-time" id="sectionBlockTime"></div> <!-- для общего времени (только открытие) -->
+            <div class="section-description" id="sectionDesc"></div>
+            <div class="talks-list" id="talksList"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        function initApp() {
+            if (typeof sections === 'undefined' || typeof talks === 'undefined') {
+                document.getElementById('talksList').innerHTML = '<div class="placeholder">Ошибка загрузки данных</div>';
+                return;
+            }
+
+            const sectionsListEl = document.getElementById('sectionsList');
+            const sectionTitleEl = document.getElementById('sectionTitle');
+            const sectionDateEl = document.getElementById('sectionDate');
+            const sectionLocationEl = document.getElementById('sectionLocation');
+            const sectionBlockTimeEl = document.getElementById('sectionBlockTime');
+            const sectionDescEl = document.getElementById('sectionDesc');
+            const talksListEl = document.getElementById('talksList');
+
+            window.showSection = function(sectionId) {
+                const section = sections.find(s => s.id === sectionId);
+                if (!section) return;
+
+                sectionTitleEl.textContent = section.name;
+                sectionDateEl.textContent = section.date;
+                sectionLocationEl.textContent = section.location;
+                // Отображаем blockTime, если есть
+                if (section.blockTime) {
+                    sectionBlockTimeEl.textContent = `⏰ ${section.blockTime}`;
+                    sectionBlockTimeEl.style.display = 'block';
+                } else {
+                    sectionBlockTimeEl.style.display = 'none';
+                }
+                sectionDescEl.textContent = section.description;
+
+                const sectionTalks = talks.filter(t => t.sectionId === sectionId);
+
+                if (sectionTalks.length === 0) {
+                    talksListEl.innerHTML = '<div class="placeholder">Пока нет докладов в этой секции</div>';
+                } else {
+                    talksListEl.innerHTML = sectionTalks.map(talk => {
+                        // Для открытия время уже показано общим блоком, поэтому не выводим в карточке
+                        const timeHtml = (section.blockTime || !talk.time) ? '' : `<div class="talk-time">⏰ ${talk.time}</div>`;
+                        const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                        // room полностью убрали
+                        return `
+                            <div class="talk-card">
+                                ${timeHtml}
+                                <div class="talk-title">${talk.title}</div>
+                                ${speakerHtml}
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                document.querySelectorAll('.section-item').forEach(el => el.classList.remove('active'));
+                document.querySelector(`[data-section-id="${sectionId}"]`)?.classList.add('active');
+            };
+
+            function buildMenu() {
+                sectionsListEl.innerHTML = sections.map(s => `
+                    <li class="section-item" data-section-id="${s.id}" onclick="showSection('${s.id}')">
+                        <span class="section-icon">${s.icon}</span> ${s.name}
+                    </li>
+                `).join('');
+                if (sections.length > 0) showSection(sections[0].id);
+            }
+
+            buildMenu();
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
