@@ -14,7 +14,8 @@
         </div>
         <div class="main" id="mainContent">
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
-            <div class="section-date" id="sectionDate"></div> <!-- ДАТА ЗДЕСЬ -->
+            <div class="section-date" id="sectionDate"></div>
+            <div class="section-location" id="sectionLocation"></div> <!-- НОВОЕ: общая локация -->
             <div class="section-description" id="sectionDesc"></div>
             <div class="talks-list" id="talksList"></div>
         </div>
@@ -30,7 +31,8 @@
 
             const sectionsListEl = document.getElementById('sectionsList');
             const sectionTitleEl = document.getElementById('sectionTitle');
-            const sectionDateEl = document.getElementById('sectionDate');   // ПОЛУЧАЕМ ЭЛЕМЕНТ
+            const sectionDateEl = document.getElementById('sectionDate');
+            const sectionLocationEl = document.getElementById('sectionLocation'); // НОВОЕ
             const sectionDescEl = document.getElementById('sectionDesc');
             const talksListEl = document.getElementById('talksList');
 
@@ -39,7 +41,8 @@
                 if (!section) return;
 
                 sectionTitleEl.textContent = section.name;
-                sectionDateEl.textContent = section.date;   // УСТАНАВЛИВАЕМ ДАТУ
+                sectionDateEl.textContent = section.date;
+                sectionLocationEl.textContent = section.location; // Устанавливаем локацию
                 sectionDescEl.textContent = section.description;
 
                 const sectionTalks = talks.filter(t => t.sectionId === sectionId);
