@@ -27,7 +27,7 @@ body {
 /* Меню слева */
 .sidebar {
     width: 280px;
-    background: #ffffff;
+    background: #0F2D69;
     border-right: 1px solid #e9ecf0;
     padding: 28px 16px;
     overflow-y: auto;
@@ -36,7 +36,7 @@ body {
 .sidebar h2 {
     font-size: 20px;
     font-weight: 600;
-    color: #0F2D69;
+    color: #ffffff;
     padding-left: 12px;
     margin-bottom: 24px;
     letter-spacing: -0.2px;
@@ -102,9 +102,21 @@ body {
 .section-date {
     font-size: 16px;
     color: #5e6f88;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     font-weight: 400;
     letter-spacing: 0.2px;
+}
+
+/* Стиль для локации (адрес секции) */
+.section-location {
+    font-size: 16px;
+    color: #0F2D69;
+    margin-bottom: 16px;
+    font-weight: 500;
+    background: rgba(15, 45, 105, 0.05);
+    padding: 6px 12px;
+    border-radius: 30px;
+    display: inline-block;
 }
 
 .section-description {
