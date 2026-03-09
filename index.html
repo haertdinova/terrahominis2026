@@ -14,7 +14,7 @@
         </div>
         <div class="main" id="mainContent">
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
-            <div class="section-date" id="sectionDate"></div> <!-- ДОБАВЛЕНО -->
+            <div class="section-date" id="sectionDate"></div> <!-- ДАТА ЗДЕСЬ -->
             <div class="section-description" id="sectionDesc"></div>
             <div class="talks-list" id="talksList"></div>
         </div>
@@ -30,7 +30,7 @@
 
             const sectionsListEl = document.getElementById('sectionsList');
             const sectionTitleEl = document.getElementById('sectionTitle');
-            const sectionDateEl = document.getElementById('sectionDate');   // ДОБАВЛЕНО
+            const sectionDateEl = document.getElementById('sectionDate');   // ПОЛУЧАЕМ ЭЛЕМЕНТ
             const sectionDescEl = document.getElementById('sectionDesc');
             const talksListEl = document.getElementById('talksList');
 
@@ -39,7 +39,7 @@
                 if (!section) return;
 
                 sectionTitleEl.textContent = section.name;
-                sectionDateEl.textContent = section.date;   // ДОБАВЛЕНО
+                sectionDateEl.textContent = section.date;   // УСТАНАВЛИВАЕМ ДАТУ
                 sectionDescEl.textContent = section.description;
 
                 const sectionTalks = talks.filter(t => t.sectionId === sectionId);
