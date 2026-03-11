@@ -154,12 +154,16 @@ body {
     padding-bottom: 12px;
 }
 
+/* Дата теперь как адрес */
 .section-date {
     font-size: 16px;
-    color: #5e6f88;
+    color: #0F2D69;
     margin-bottom: 8px;
-    font-weight: 400;
-    letter-spacing: 0.2px;
+    font-weight: 500;
+    background: rgba(15, 45, 105, 0.05);
+    padding: 6px 12px;
+    border-radius: 30px;
+    display: inline-block;
 }
 
 .section-location {
@@ -173,11 +177,39 @@ body {
     display: inline-block;
 }
 
-.section-description {
-    color: #4a5b6f;
-    margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 1.5;
+/* Контейнер фильтров */
+.filters-container {
+    margin: 20px 0;
+}
+
+.day-filters, .room-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.filter-btn {
+    background: white;
+    border: 1px solid #dde3ed;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    border-color: #0F2D69;
+    background: rgba(15,45,105,0.02);
+}
+
+.filter-btn.active {
+    background: #0F2D69;
+    color: white;
+    border-color: #0F2D69;
 }
 
 .search-container {
@@ -224,7 +256,6 @@ body {
     gap: 16px;
 }
 
-/* Группировка по дням */
 .day-group {
     margin-bottom: 32px;
 }
@@ -318,5 +349,13 @@ body {
     }
     .section-title {
         font-size: 26px;
+    }
+    .day-filters, .room-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+    .filter-btn {
+        white-space: nowrap;
     }
 }
