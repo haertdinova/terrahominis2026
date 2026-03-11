@@ -19,11 +19,20 @@
         </div>
         <div class="main">
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
+            
+            <!-- Дата и адрес (оба стилизованы одинаково) -->
             <div class="section-date" id="sectionDate"></div>
             <div class="section-location" id="sectionLocation"></div>
-            <div class="section-special-time" id="sectionSpecialTime" style="display: none;"></div>
-            <div class="section-description" id="sectionDesc"></div>
             
+            <!-- Специальное время для открытия -->
+            <div class="section-special-time" id="sectionSpecialTime" style="display: none;"></div>
+
+            <!-- Фильтры по дням и аудиториям -->
+            <div class="filters-container">
+                <div class="day-filters" id="dayFilters" style="display: none;"></div>
+                <div class="room-filters" id="roomFilters" style="display: none;"></div>
+            </div>
+
             <!-- Локальный поиск внутри секции -->
             <div class="search-container">
                 <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по текущей секции...">
@@ -47,16 +56,19 @@
             const sectionDateEl = document.getElementById('sectionDate');
             const sectionLocationEl = document.getElementById('sectionLocation');
             const sectionSpecialTimeEl = document.getElementById('sectionSpecialTime');
-            const sectionDescEl = document.getElementById('sectionDesc');
             const talksListEl = document.getElementById('talksList');
             const searchInput = document.getElementById('searchInput');
             const globalSearchInput = document.getElementById('globalSearchInput');
             const globalSearchResults = document.getElementById('globalSearchResults');
+            const dayFiltersEl = document.getElementById('dayFilters');
+            const roomFiltersEl = document.getElementById('roomFilters');
 
             let currentSectionId = null;
             let currentTalks = [];
+            let selectedDay = 'all';
+            let selectedRoom = 'all';
 
-            // ---------- Глобальный поиск ----------
+            // ---------- Глобальный поиск (без изменений) ----------
             function performGlobalSearch() {
                 const query = globalSearchInput.value.trim().toLowerCase();
                 if (query === '') {
@@ -89,41 +101,89 @@
                 globalSearchResults.style.display = 'block';
             }
 
-            // Обработчик клика на результат глобального поиска
-            globalSearchResults.addEventListener('click', (e) => {
-                const item = e.target.closest('.global-search-result-item');
-                if (!item) return;
-                const sectionId = item.dataset.sectionId;
-                const query = globalSearchInput.value.trim();
-                
-                // Переключаем секцию
-                showSection(sectionId);
-                
-                // Устанавливаем локальный поиск
-                searchInput.value = query;
-                renderTalks();
-                
-                // Очищаем глобальный поиск
-                globalSearchInput.value = '';
-                globalSearchResults.innerHTML = '';
-                globalSearchResults.style.display = 'none';
-            });
-
-            // Debounce для глобального поиска
             let globalSearchTimer;
             globalSearchInput.addEventListener('input', () => {
                 clearTimeout(globalSearchTimer);
                 globalSearchTimer = setTimeout(performGlobalSearch, 300);
             });
 
-            // Скрывать результаты при потере фокуса (с задержкой)
             globalSearchInput.addEventListener('blur', () => {
                 setTimeout(() => {
                     globalSearchResults.style.display = 'none';
                 }, 200);
             });
 
-            // ---------- Локальный рендер с группировкой по дням и аудиториям ----------
+            globalSearchResults.addEventListener('click', (e) => {
+                const item = e.target.closest('.global-search-result-item');
+                if (!item) return;
+                const sectionId = item.dataset.sectionId;
+                const query = globalSearchInput.value.trim();
+                
+                showSection(sectionId);
+                searchInput.value = query;
+                renderTalks();
+                
+                globalSearchInput.value = '';
+                globalSearchResults.innerHTML = '';
+                globalSearchResults.style.display = 'none';
+            });
+
+            // ---------- Фильтры по дням ----------
+            function renderDayFilters() {
+                const days = [...new Set(currentTalks.map(t => t.day).filter(d => d))];
+                if (days.length <= 1) {
+                    dayFiltersEl.style.display = 'none';
+                    return;
+                }
+                dayFiltersEl.style.display = 'flex';
+                let html = `<button class="filter-btn ${selectedDay === 'all' ? 'active' : ''}" data-day="all">Все дни</button>`;
+                days.sort().forEach(day => {
+                    html += `<button class="filter-btn ${selectedDay === day ? 'active' : ''}" data-day="${day}">${day}</button>`;
+                });
+                dayFiltersEl.innerHTML = html;
+
+                // Обработчики
+                dayFiltersEl.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        selectedDay = btn.dataset.day;
+                        renderDayFilters(); // обновить активный класс
+                        renderRoomFilters(); // перестроить фильтры аудиторий (они могут зависеть от дня)
+                        renderTalks();
+                    });
+                });
+            }
+
+            // ---------- Фильтры по аудиториям ----------
+            function renderRoomFilters() {
+                // Определим доступные аудитории с учётом выбранного дня
+                let talksForRooms = currentTalks;
+                if (selectedDay !== 'all') {
+                    talksForRooms = talksForRooms.filter(t => t.day === selectedDay);
+                }
+                const rooms = [...new Set(talksForRooms.map(t => t.room).filter(r => r))];
+                
+                if (rooms.length <= 1) {
+                    roomFiltersEl.style.display = 'none';
+                    selectedRoom = 'all'; // сброс
+                    return;
+                }
+                roomFiltersEl.style.display = 'flex';
+                let html = `<button class="filter-btn ${selectedRoom === 'all' ? 'active' : ''}" data-room="all">Все аудитории</button>`;
+                rooms.sort().forEach(room => {
+                    html += `<button class="filter-btn ${selectedRoom === room ? 'active' : ''}" data-room="${room}">${room}</button>`;
+                });
+                roomFiltersEl.innerHTML = html;
+
+                roomFiltersEl.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        selectedRoom = btn.dataset.room;
+                        renderRoomFilters(); // обновить активный класс
+                        renderTalks();
+                    });
+                });
+            }
+
+            // ---------- Рендер докладов с учётом фильтров и поиска ----------
             function renderTalks() {
                 if (!currentSectionId) return;
 
@@ -131,8 +191,18 @@
                 const searchTerm = searchInput.value.toLowerCase().trim();
 
                 let filteredTalks = currentTalks;
+
+                // Фильтр по дню
+                if (selectedDay !== 'all') {
+                    filteredTalks = filteredTalks.filter(t => t.day === selectedDay);
+                }
+                // Фильтр по аудитории
+                if (selectedRoom !== 'all') {
+                    filteredTalks = filteredTalks.filter(t => t.room === selectedRoom);
+                }
+                // Поиск по тексту
                 if (searchTerm !== '') {
-                    filteredTalks = currentTalks.filter(talk => 
+                    filteredTalks = filteredTalks.filter(talk => 
                         (talk.title && talk.title.toLowerCase().includes(searchTerm)) ||
                         (talk.speaker && talk.speaker.toLowerCase().includes(searchTerm))
                     );
@@ -143,64 +213,19 @@
                     return;
                 }
 
-                // Определяем, есть ли у докладов поле day (для группировки)
-                const hasDay = filteredTalks.some(t => t.day);
-                
-                if (hasDay) {
-                    // Группировка по дням
-                    const days = [...new Set(filteredTalks.map(t => t.day).filter(d => d))];
-                    let html = '';
-                    days.sort().forEach(day => {
-                        const dayTalks = filteredTalks.filter(t => t.day === day);
-                        html += `<div class="day-group">`;
-                        html += `<div class="day-title">${day}</div>`;
-                        
-                        // Если внутри дня есть аудитории (room) — группируем по ним
-                        const hasRoom = dayTalks.some(t => t.room);
-                        if (hasRoom) {
-                            const rooms = [...new Set(dayTalks.map(t => t.room).filter(r => r))];
-                            rooms.sort().forEach(room => {
-                                const roomTalks = dayTalks.filter(t => t.room === room);
-                                html += `<div class="subsection-group">`;
-                                html += `<div class="subsection-title">${room}</div>`;
-                                roomTalks.forEach(talk => {
-                                    const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
-                                    const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                                    html += `
-                                        <div class="talk-card">
-                                            ${timeHtml}
-                                            <div class="talk-title">${talk.title}</div>
-                                            ${speakerHtml}
-                                        </div>
-                                    `;
-                                });
-                                html += `</div>`;
-                            });
-                        } else {
-                            // Просто выводим доклады дня
-                            dayTalks.forEach(talk => {
-                                const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
-                                const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                                html += `
-                                    <div class="talk-card">
-                                        ${timeHtml}
-                                        <div class="talk-title">${talk.title}</div>
-                                        ${speakerHtml}
-                                    </div>
-                                `;
-                            });
-                        }
-                        html += `</div>`;
-                    });
-                    talksListEl.innerHTML = html;
-                } else {
-                    // Если дней нет (однодневные секции) — обычный вывод
-                    if (section.hasSubsections) {
-                        // Группировка по аудиториям (без дней)
-                        const rooms = [...new Set(filteredTalks.map(t => t.room).filter(r => r))];
-                        let html = '';
-                        rooms.forEach(room => {
-                            const roomTalks = filteredTalks.filter(t => t.room === room);
+                // Группировка по дням (оставляем для наглядности, но если выбран конкретный день, группа одна)
+                const days = [...new Set(filteredTalks.map(t => t.day).filter(d => d))];
+                let html = '';
+                days.sort().forEach(day => {
+                    const dayTalks = filteredTalks.filter(t => t.day === day);
+                    html += `<div class="day-group">`;
+                    html += `<div class="day-title">${day}</div>`;
+                    
+                    // Группировка по аудиториям внутри дня
+                    const rooms = [...new Set(dayTalks.map(t => t.room).filter(r => r))];
+                    if (rooms.length > 0) {
+                        rooms.sort().forEach(room => {
+                            const roomTalks = dayTalks.filter(t => t.room === room);
                             html += `<div class="subsection-group">`;
                             html += `<div class="subsection-title">${room}</div>`;
                             roomTalks.forEach(talk => {
@@ -216,22 +241,23 @@
                             });
                             html += `</div>`;
                         });
-                        talksListEl.innerHTML = html;
                     } else {
-                        // Обычный список
-                        talksListEl.innerHTML = filteredTalks.map(talk => {
+                        // Если аудиторий нет, просто выводим доклады
+                        dayTalks.forEach(talk => {
                             const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                             const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                            return `
+                            html += `
                                 <div class="talk-card">
                                     ${timeHtml}
                                     <div class="talk-title">${talk.title}</div>
                                     ${speakerHtml}
                                 </div>
                             `;
-                        }).join('');
+                        });
                     }
-                }
+                    html += `</div>`;
+                });
+                talksListEl.innerHTML = html;
             }
 
             // ---------- Переключение секции ----------
@@ -242,10 +268,16 @@
                 currentSectionId = sectionId;
                 currentTalks = talks.filter(t => t.sectionId === sectionId);
 
+                // Сбрасываем фильтры
+                selectedDay = 'all';
+                selectedRoom = 'all';
+
                 sectionTitleEl.textContent = section.name;
                 sectionDateEl.textContent = section.date;
                 sectionLocationEl.textContent = section.location;
-                sectionDescEl.textContent = section.description;
+
+                // Описание убрали, не показываем
+                // sectionDescEl.style.display = 'none';
 
                 if (section.specialTime) {
                     sectionSpecialTimeEl.style.display = 'inline-block';
@@ -253,6 +285,10 @@
                 } else {
                     sectionSpecialTimeEl.style.display = 'none';
                 }
+
+                // Перестроить фильтры
+                renderDayFilters();
+                renderRoomFilters();
 
                 // Сброс локального поиска
                 searchInput.value = '';
@@ -272,7 +308,7 @@
                 if (sections.length > 0) showSection(sections[0].id);
             }
 
-            // Локальный поиск по текущей секции
+            // Локальный поиск
             searchInput.addEventListener('input', renderTalks);
 
             buildMenu();
