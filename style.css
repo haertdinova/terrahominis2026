@@ -98,13 +98,10 @@ body {
 
 .section-date {
     font-size: 16px;
-    color: #0F2D69;
-    margin-bottom: 16px;
-    font-weight: 500;
-    background: rgba(15, 45, 105, 0.05);
-    padding: 6px 12px;
-    border-radius: 30px;
-    display: inline-block;
+    color: #5e6f88;
+    margin-bottom: 8px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
 }
 
 .section-location {
@@ -120,12 +117,37 @@ body {
 
 .section-description {
     color: #4a5b6f;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     font-size: 16px;
     line-height: 1.5;
 }
 
-/* Блок общего времени (для открытия) */
+.search-container {
+    margin-bottom: 25px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+    border: 1px solid #dde3ed;
+    border-radius: 50px;
+    background: white;
+    transition: all 0.2s;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.search-input:focus {
+    border-color: #0F2D69;
+    box-shadow: 0 4px 12px rgba(15,45,105,0.1);
+}
+
+.search-input::placeholder {
+    color: #a0b1c6;
+    font-weight: 300;
+}
+
 .section-special-time {
     font-size: 18px;
     font-weight: 600;
@@ -144,6 +166,22 @@ body {
     gap: 16px;
 }
 
+/* Группировка по аудиториям */
+.subsections-group {
+    margin-bottom: 24px;
+}
+
+.subsection-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0F2D69;
+    background: rgba(15, 45, 105, 0.05);
+    padding: 8px 16px;
+    border-radius: 40px;
+    margin-bottom: 12px;
+    display: inline-block;
+}
+
 .talk-card {
     background: white;
     padding: 22px 26px;
@@ -151,6 +189,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 20, 40, 0.03);
     border: 1px solid #eef2f6;
     transition: all 0.2s;
+    margin-bottom: 8px;
 }
 
 .talk-card:hover {
@@ -187,16 +226,15 @@ body {
     text-align: center;
 }
 
-/* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
 @media (max-width: 700px) {
     .app { 
         flex-direction: column; 
         height: auto; 
-        max-height: 95vh; 
+        max-height: 95vh;
     }
     .sidebar { 
         width: 100%; 
-        max-height: 200px; 
+        max-height: 200px;
         overflow-y: auto;
         border-right: none; 
         border-bottom: 1px solid #ddd; 
