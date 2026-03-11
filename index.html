@@ -16,8 +16,13 @@
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
             <div class="section-date" id="sectionDate"></div>
             <div class="section-location" id="sectionLocation"></div>
-            <div class="section-special-time" id="sectionSpecialTime" style="display: none;"></div> <!-- для открытия -->
+            <div class="section-special-time" id="sectionSpecialTime" style="display: none;"></div>
             <div class="section-description" id="sectionDesc"></div>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по докладам и спикерам...">
+            </div>
+
             <div class="talks-list" id="talksList"></div>
         </div>
     </div>
@@ -37,31 +42,57 @@
             const sectionSpecialTimeEl = document.getElementById('sectionSpecialTime');
             const sectionDescEl = document.getElementById('sectionDesc');
             const talksListEl = document.getElementById('talksList');
+            const searchInput = document.getElementById('searchInput');
 
-            window.showSection = function(sectionId) {
-                const section = sections.find(s => s.id === sectionId);
-                if (!section) return;
+            let currentSectionId = null;
+            let currentTalks = [];
 
-                sectionTitleEl.textContent = section.name;
-                sectionDateEl.textContent = section.date;
-                sectionLocationEl.textContent = section.location;
-                sectionDescEl.textContent = section.description;
+            function renderTalks() {
+                if (!currentSectionId) return;
 
-                // Обработка специального времени (для открытия)
-                if (section.specialTime) {
-                    sectionSpecialTimeEl.style.display = 'inline-block';
-                    sectionSpecialTimeEl.textContent = `⏰ Общее время: ${section.specialTime}`;
-                } else {
-                    sectionSpecialTimeEl.style.display = 'none';
+                const section = sections.find(s => s.id === currentSectionId);
+                const searchTerm = searchInput.value.toLowerCase().trim();
+
+                let filteredTalks = currentTalks;
+                if (searchTerm !== '') {
+                    filteredTalks = currentTalks.filter(talk => 
+                        (talk.title && talk.title.toLowerCase().includes(searchTerm)) ||
+                        (talk.speaker && talk.speaker.toLowerCase().includes(searchTerm))
+                    );
                 }
 
-                const sectionTalks = talks.filter(t => t.sectionId === sectionId);
+                if (filteredTalks.length === 0) {
+                    talksListEl.innerHTML = '<div class="placeholder">Ничего не найдено</div>';
+                    return;
+                }
 
-                if (sectionTalks.length === 0) {
-                    talksListEl.innerHTML = '<div class="placeholder">Пока нет докладов в этой секции</div>';
+                // Если секция имеет подразделы (room), группируем
+                if (section.hasSubsections) {
+                    // Получаем уникальные значения room (игнорируем пустые, например для перерывов)
+                    const rooms = [...new Set(filteredTalks.map(t => t.room).filter(r => r))];
+                    let html = '';
+                    rooms.forEach(room => {
+                        const roomTalks = filteredTalks.filter(t => t.room === room);
+                        if (roomTalks.length === 0) return;
+                        html += `<div class="subsections-group">`;
+                        html += `<div class="subsection-title">${room}</div>`;
+                        roomTalks.forEach(talk => {
+                            const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
+                            const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                            html += `
+                                <div class="talk-card">
+                                    ${timeHtml}
+                                    <div class="talk-title">${talk.title}</div>
+                                    ${speakerHtml}
+                                </div>
+                            `;
+                        });
+                        html += `</div>`;
+                    });
+                    talksListEl.innerHTML = html;
                 } else {
-                    talksListEl.innerHTML = sectionTalks.map(talk => {
-                        // Для открытия время не показываем (оно уже выведено выше)
+                    // Обычный вывод без группировки
+                    talksListEl.innerHTML = filteredTalks.map(talk => {
                         const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
                         return `
@@ -73,6 +104,29 @@
                         `;
                     }).join('');
                 }
+            }
+
+            window.showSection = function(sectionId) {
+                const section = sections.find(s => s.id === sectionId);
+                if (!section) return;
+
+                currentSectionId = sectionId;
+                currentTalks = talks.filter(t => t.sectionId === sectionId);
+
+                sectionTitleEl.textContent = section.name;
+                sectionDateEl.textContent = section.date;
+                sectionLocationEl.textContent = section.location;
+                sectionDescEl.textContent = section.description;
+
+                if (section.specialTime) {
+                    sectionSpecialTimeEl.style.display = 'inline-block';
+                    sectionSpecialTimeEl.textContent = `⏰ Общее время: ${section.specialTime}`;
+                } else {
+                    sectionSpecialTimeEl.style.display = 'none';
+                }
+
+                searchInput.value = '';
+                renderTalks();
 
                 document.querySelectorAll('.section-item').forEach(el => el.classList.remove('active'));
                 document.querySelector(`[data-section-id="${sectionId}"]`)?.classList.add('active');
@@ -86,6 +140,8 @@
                 `).join('');
                 if (sections.length > 0) showSection(sections[0].id);
             }
+
+            searchInput.addEventListener('input', renderTalks);
 
             buildMenu();
         }
