@@ -154,9 +154,8 @@ body {
     padding-bottom: 12px;
 }
 
-/* Дата и адрес — одинаковый стиль */
-.section-date,
-.section-location {
+/* Дата теперь как адрес */
+.section-date {
     font-size: 16px;
     color: #0F2D69;
     margin-bottom: 8px;
@@ -168,54 +167,49 @@ body {
 }
 
 .section-location {
+    font-size: 16px;
+    color: #0F2D69;
     margin-bottom: 16px;
+    font-weight: 500;
+    background: rgba(15, 45, 105, 0.05);
+    padding: 6px 12px;
+    border-radius: 30px;
+    display: inline-block;
 }
 
-/* Контейнер вкладок */
-.tabs-container {
-    margin: 20px 0 15px 0;
+/* Контейнер фильтров */
+.filters-container {
+    margin: 20px 0;
 }
 
-.day-tabs, .room-tabs {
+.day-filters, .room-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 10px;
-    border-bottom: 1px solid #e0e7ef;
-    padding-bottom: 8px;
 }
 
-.tab {
-    padding: 8px 20px;
-    background: transparent;
-    border: none;
+.filter-btn {
+    background: white;
+    border: 1px solid #dde3ed;
+    padding: 8px 18px;
     border-radius: 30px;
     font-size: 15px;
     font-weight: 500;
-    color: #4a5b6f;
+    color: #2c3e50;
     cursor: pointer;
     transition: all 0.2s;
-    user-select: none;
 }
 
-.tab:hover {
-    background: rgba(15, 45, 105, 0.05);
-    color: #0F2D69;
+.filter-btn:hover {
+    border-color: #0F2D69;
+    background: rgba(15,45,105,0.02);
 }
 
-.tab.active {
+.filter-btn.active {
     background: #0F2D69;
     color: white;
-}
-
-.room-tabs {
-    border-bottom: none;
-    margin-top: 5px;
-}
-
-.room-tabs .tab {
-    font-size: 14px;
-    padding: 6px 16px;
+    border-color: #0F2D69;
 }
 
 .search-container {
@@ -262,7 +256,6 @@ body {
     gap: 16px;
 }
 
-/* Группировка (оставлена для режима "все дни / все аудитории") */
 .day-group {
     margin-bottom: 32px;
 }
@@ -357,12 +350,12 @@ body {
     .section-title {
         font-size: 26px;
     }
-    .day-tabs, .room-tabs {
+    .day-filters, .room-filters {
         flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 8px;
+        padding-bottom: 10px;
     }
-    .tab {
+    .filter-btn {
         white-space: nowrap;
     }
 }
