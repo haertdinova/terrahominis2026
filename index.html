@@ -181,7 +181,7 @@
                 });
             }
 
-            // ---------- Рендер докладов с группировкой по дням ----------
+            // ---------- Рендер докладов с учётом фильтров и поиска ----------
             function renderTalks() {
                 if (!currentSectionId) return;
 
@@ -211,7 +211,7 @@
                     return;
                 }
 
-                // Группировка по дням (всегда показываем заголовки дней)
+                // Группировка по дням (всегда показываем заголовки дней, если они есть)
                 const days = [...new Set(filteredTalks.map(t => t.day).filter(d => d))];
                 let html = '';
 
@@ -220,11 +220,13 @@
                     filteredTalks.forEach(talk => {
                         const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                        const formatHtml = talk.format ? `<span class="talk-format-online">🌐 онлайн</span>` : '';
                         html += `
                             <div class="talk-card">
                                 ${timeHtml}
                                 <div class="talk-title">${talk.title}</div>
                                 ${speakerHtml}
+                                ${formatHtml}
                             </div>
                         `;
                     });
@@ -245,11 +247,13 @@
                                 roomTalks.forEach(talk => {
                                     const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                     const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                                    const formatHtml = talk.format ? `<span class="talk-format-online">🌐 онлайн</span>` : '';
                                     html += `
                                         <div class="talk-card">
                                             ${timeHtml}
                                             <div class="talk-title">${talk.title}</div>
                                             ${speakerHtml}
+                                            ${formatHtml}
                                         </div>
                                     `;
                                 });
@@ -260,11 +264,13 @@
                             dayTalks.forEach(talk => {
                                 const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                 const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                                const formatHtml = talk.format ? `<span class="talk-format-online">🌐 онлайн</span>` : '';
                                 html += `
                                     <div class="talk-card">
                                         ${timeHtml}
                                         <div class="talk-title">${talk.title}</div>
                                         ${speakerHtml}
+                                        ${formatHtml}
                                     </div>
                                 `;
                             });
