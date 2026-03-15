@@ -324,6 +324,18 @@ body {
     font-weight: 500;
 }
 
+/* Пометка онлайн */
+.talk-format-online {
+    display: inline-block;
+    background: rgba(52, 152, 219, 0.15);
+    color: #0F2D69;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 30px;
+    margin-top: 8px;
+}
+
 .placeholder {
     color: #8f9fb1;
     font-style: italic;
