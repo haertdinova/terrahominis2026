@@ -492,12 +492,30 @@ body {
 @media (max-width: 700px) {
     body {
         padding: 0;
+        margin: 0;
         height: 100vh;
         overflow: hidden;
+        background: #f4f7fb;
     }
     
     .mobile-menu-toggle {
         display: flex;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 1000;
+        background: #0F2D69;
+        color: white;
+        border: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(15, 45, 105, 0.3);
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
     }
     
     .app {
@@ -506,6 +524,9 @@ body {
         height: 100vh;
         border-radius: 0;
         box-shadow: none;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
     }
     
     .sidebar {
@@ -520,6 +541,9 @@ body {
         border-right: 1px solid #ddd;
         box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         padding: 20px 16px;
+        background: white;
+        transition: transform 0.3s ease;
+        overflow-y: auto;
     }
     
     .sidebar.open {
@@ -528,11 +552,15 @@ body {
     
     .sidebar-header {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
     }
     
     .sidebar h2 {
         margin-bottom: 16px;
         padding-left: 0;
+        font-size: 20px;
     }
     
     .main {
@@ -540,19 +568,24 @@ body {
         width: 100%;
         height: 100vh;
         overflow-y: auto;
+        background: #fafcff;
     }
     
     .conference-header {
         margin-bottom: 24px;
         padding-bottom: 16px;
+        text-align: center;
     }
     
     .header-name {
         font-size: 24px;
+        line-height: 1.3;
+        margin-bottom: 8px;
     }
     
     .header-title {
         font-size: 16px;
+        line-height: 1.4;
     }
     
     .header-org, .header-date {
@@ -562,29 +595,134 @@ body {
     .section-title {
         font-size: 24px;
         margin-top: 0;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+    
+    .section-date, .section-location {
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+    
+    .section-special-time {
+        font-size: 15px;
+        margin-bottom: 16px;
+        padding: 5px 12px;
+    }
+    
+    .filters-container {
+        margin: 15px 0;
     }
     
     .day-filters, .room-filters {
+        display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
-        padding-bottom: 10px;
+        gap: 8px;
+        padding-bottom: 12px;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
     }
     
     .filter-btn {
         white-space: nowrap;
         flex-shrink: 0;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    
+    .search-container {
+        margin-bottom: 20px;
+    }
+    
+    .search-input {
+        padding: 12px 18px;
+        font-size: 15px;
+    }
+    
+    .talks-list {
+        gap: 12px;
+        padding-bottom: 30px;
+    }
+    
+    .day-group {
+        margin-bottom: 24px;
+    }
+    
+    .day-title {
+        font-size: 18px;
+        padding: 8px 16px;
+        margin-bottom: 16px;
+    }
+    
+    .subsection-group {
+        margin-bottom: 20px;
+    }
+    
+    .subsection-title {
+        font-size: 16px;
+        padding: 6px 14px;
+        margin-bottom: 10px;
     }
     
     .talk-card {
         padding: 16px 18px;
+        margin-bottom: 8px;
+    }
+    
+    .talk-time {
+        font-size: 14px;
     }
     
     .talk-title {
         font-size: 18px;
     }
     
+    .talk-speaker {
+        font-size: 15px;
+    }
+    
+    .talk-format, .talk-note {
+        font-size: 12px;
+        padding: 3px 10px;
+        margin-top: 6px;
+    }
+    
+    .workshop-card {
+        padding: 16px 18px;
+    }
+    
+    .workshop-participant {
+        font-size: 15px;
+        padding: 5px 0;
+    }
+    
     .global-search-container {
         margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .global-search-input {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+    
+    .global-search-results {
+        max-height: 250px;
+        font-size: 13px;
+    }
+    
+    input, button {
+        -webkit-appearance: none;
+        border-radius: 0;
+    }
+    
+    button {
+        cursor: pointer;
+    }
+    
+   
+    * {
+        -webkit-tap-highlight-color: transparent;
     }
 }
