@@ -154,7 +154,6 @@ body {
     padding-bottom: 12px;
 }
 
-/* Дата теперь как адрес */
 .section-date {
     font-size: 16px;
     color: #0F2D69;
@@ -177,7 +176,6 @@ body {
     display: inline-block;
 }
 
-/* Контейнер фильтров */
 .filters-container {
     margin: 20px 0;
 }
@@ -239,15 +237,13 @@ body {
 }
 
 .section-special-time {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 500;
     color: #0F2D69;
-    background: rgba(15, 45, 105, 0.1);
-    padding: 12px 20px;
-    border-radius: 40px;
-    margin-bottom: 25px;
+    background: rgba(15, 45, 105, 0.05);
+    padding: 6px 12px;
+    border-radius: 30px;
     display: inline-block;
-    border: 1px solid rgba(15, 45, 105, 0.2);
 }
 
 .talks-list {
