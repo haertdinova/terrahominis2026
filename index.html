@@ -20,11 +20,11 @@
         <div class="main">
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
             
-            <!-- Дата и адрес (оба стилизованы одинаково) -->
+            <!-- Дата и адрес -->
             <div class="section-date" id="sectionDate"></div>
             <div class="section-location" id="sectionLocation"></div>
             
-            <!-- Специальное время для открытия -->
+            <!-- Специальное время для открытия и воркшопа -->
             <div class="section-special-time" id="sectionSpecialTime" style="display: none;"></div>
 
             <!-- Фильтры по дням и аудиториям -->
@@ -181,7 +181,7 @@
                 });
             }
 
-            // ---------- Рендер докладов с учётом фильтров и поиска ----------
+            // ---------- Рендер докладов ----------
             function renderTalks() {
                 if (!currentSectionId) return;
 
@@ -211,33 +211,42 @@
                     return;
                 }
 
-                // Группировка по дням (всегда показываем заголовки дней, если они есть)
+                // Особый вывод для воркшопа
+                if (currentSectionId === 'workshop') {
+                    // Заголовок один раз
+                    talksListEl.innerHTML = `
+                        <div class="talk-card workshop-card">
+                            <div class="talk-title">Список приглашённых к участию</div>
+                            <div class="workshop-participants">
+                                ${filteredTalks.map(t => `<div class="workshop-participant">👤 ${t.speaker}</div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Стандартный вывод для остальных секций
                 const days = [...new Set(filteredTalks.map(t => t.day).filter(d => d))];
                 let html = '';
 
                 if (days.length === 0) {
-                    // Если дней нет (например, открытие), просто выводим все карточки
                     filteredTalks.forEach(talk => {
                         const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                        const formatHtml = talk.format ? `<span class="talk-format-online">🌐 онлайн</span>` : '';
                         html += `
                             <div class="talk-card">
                                 ${timeHtml}
                                 <div class="talk-title">${talk.title}</div>
                                 ${speakerHtml}
-                                ${formatHtml}
                             </div>
                         `;
                     });
                 } else {
-                    // Сортируем дни
                     days.sort().forEach(day => {
                         const dayTalks = filteredTalks.filter(t => t.day === day);
                         html += `<div class="day-group">`;
                         html += `<div class="day-title">${day}</div>`;
                         
-                        // Группировка по аудиториям внутри дня
                         const rooms = [...new Set(dayTalks.map(t => t.room).filter(r => r))];
                         if (rooms.length > 0) {
                             rooms.sort().forEach(room => {
@@ -247,30 +256,25 @@
                                 roomTalks.forEach(talk => {
                                     const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                     const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                                    const formatHtml = talk.format ? `<span class="talk-format-online">🌐 онлайн</span>` : '';
                                     html += `
                                         <div class="talk-card">
                                             ${timeHtml}
                                             <div class="talk-title">${talk.title}</div>
                                             ${speakerHtml}
-                                            ${formatHtml}
                                         </div>
                                     `;
                                 });
                                 html += `</div>`;
                             });
                         } else {
-                            // Если аудиторий нет, просто выводим доклады дня
                             dayTalks.forEach(talk => {
                                 const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                 const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
-                                const formatHtml = talk.format ? `<span class="talk-format-online">🌐 онлайн</span>` : '';
                                 html += `
                                     <div class="talk-card">
                                         ${timeHtml}
                                         <div class="talk-title">${talk.title}</div>
                                         ${speakerHtml}
-                                        ${formatHtml}
                                     </div>
                                 `;
                             });
@@ -289,7 +293,6 @@
                 currentSectionId = sectionId;
                 currentTalks = talks.filter(t => t.sectionId === sectionId);
 
-                // Сбрасываем фильтры
                 selectedDay = 'all';
                 selectedRoom = 'all';
 
@@ -304,11 +307,8 @@
                     sectionSpecialTimeEl.style.display = 'none';
                 }
 
-                // Перестроить фильтры
                 renderDayFilters();
                 renderRoomFilters();
-
-                // Сброс локального поиска
                 searchInput.value = '';
                 renderTalks();
 
@@ -316,7 +316,6 @@
                 document.querySelector(`[data-section-id="${sectionId}"]`)?.classList.add('active');
             };
 
-            // ---------- Построение меню секций ----------
             function buildMenu() {
                 sectionsListEl.innerHTML = sections.map(s => `
                     <li class="section-item" data-section-id="${s.id}" onclick="showSection('${s.id}')">
@@ -326,7 +325,6 @@
                 if (sections.length > 0) showSection(sections[0].id);
             }
 
-            // Локальный поиск
             searchInput.addEventListener('input', renderTalks);
 
             buildMenu();
