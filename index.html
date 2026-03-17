@@ -211,7 +211,7 @@
                     return;
                 }
 
-                // Особый вывод для воркшопа
+                // Воркшоп
                 if (currentSectionId === 'workshop') {
                     talksListEl.innerHTML = `
                         <div class="talk-card workshop-card">
@@ -229,17 +229,18 @@
                 let html = '';
 
                 if (days.length === 0) {
-                    // Если дней нет (например, открытие), просто выводим все карточки
-                    filteredTalks.forEach(talk => {
+                        filteredTalks.forEach(talk => {
                         const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
                         const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
+                        const noteHtml = talk.note ? `<div class="talk-note">📌 ${talk.note}</div>` : '';
                         html += `
                             <div class="talk-card">
                                 ${timeHtml}
                                 <div class="talk-title">${talk.title}</div>
                                 ${speakerHtml}
                                 ${formatHtml}
+                                ${noteHtml}
                             </div>
                         `;
                     });
@@ -259,12 +260,14 @@
                                     const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                     const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
                                     const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
+                                    const noteHtml = talk.note ? `<div class="talk-note">📌 ${talk.note}</div>` : '';
                                     html += `
                                         <div class="talk-card">
                                             ${timeHtml}
                                             <div class="talk-title">${talk.title}</div>
                                             ${speakerHtml}
                                             ${formatHtml}
+                                            ${noteHtml}
                                         </div>
                                     `;
                                 });
@@ -275,12 +278,14 @@
                                 const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                 const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
                                 const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
+                                const noteHtml = talk.note ? `<div class="talk-note">📌 ${talk.note}</div>` : '';
                                 html += `
                                     <div class="talk-card">
                                         ${timeHtml}
                                         <div class="talk-title">${talk.title}</div>
                                         ${speakerHtml}
                                         ${formatHtml}
+                                        ${noteHtml}
                                     </div>
                                 `;
                             });
