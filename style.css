@@ -14,7 +14,7 @@ body {
     position: relative;
 }
 
-/* Кнопка гамбургера (видна только на мобильных) */
+/* Кнопка гамбургера */
 .mobile-menu-toggle {
     display: none;
     position: fixed;
@@ -206,14 +206,14 @@ body {
 
 /* Шапка конференции */
 .conference-header {
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 2px solid rgba(15, 45, 105, 0.15);
     text-align: center;
 }
 
 .header-title {
-    font-size: 32px;
+    font-size: 20px;
     font-weight: 700;
     color: #0F2D69;
     margin-bottom: 12px;
