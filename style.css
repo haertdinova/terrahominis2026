@@ -351,7 +351,7 @@ body {
 }
 
 .section-special-time::before {
-    content: "⏰ ";
+    content: " ";
     font-size: 16px;
 }
 
