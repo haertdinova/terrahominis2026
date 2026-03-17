@@ -320,6 +320,30 @@ body {
     font-weight: 500;
 }
 
+/* Воркшоп */
+.workshop-card {
+    background: white;
+    padding: 22px 26px;
+    border-radius: 22px;
+    box-shadow: 0 4px 12px rgba(0, 20, 40, 0.03);
+    border: 1px solid #eef2f6;
+}
+
+.workshop-participants {
+    margin-top: 16px;
+}
+
+.workshop-participant {
+    font-size: 16px;
+    color: #2d4b6e;
+    padding: 6px 0;
+    border-bottom: 1px dashed #eef2f6;
+}
+
+.workshop-participant:last-child {
+    border-bottom: none;
+}
+
 /* Пометка онлайн */
 .talk-format-online {
     display: inline-block;
