@@ -112,13 +112,12 @@
                 menuOverlay.addEventListener('click', closeMobileMenu);
             }
 
-            // Закрывать меню при выборе секции на мобильных
-            function handleSectionClick(sectionId) {
-                showSection(sectionId);
-                if (window.innerWidth <= 700) {
+            // Закрывать меню при изменении размера окна
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 700) {
                     closeMobileMenu();
                 }
-            }
+            });
 
             let currentSectionId = null;
             let currentTalks = [];
@@ -391,7 +390,7 @@
 
             function buildMenu() {
                 sectionsListEl.innerHTML = sections.map(s => `
-                    <li class="section-item" data-section-id="${s.id}" onclick="handleSectionClick('${s.id}')">
+                    <li class="section-item" data-section-id="${s.id}" onclick="showSection('${s.id}')">
                         <span class="section-icon">${s.icon}</span> ${s.name}
                     </li>
                 `).join('');
@@ -401,13 +400,6 @@
             searchInput.addEventListener('input', renderTalks);
 
             buildMenu();
-
-            // Закрывать меню при изменении размера окна
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 700) {
-                    closeMobileMenu();
-                }
-            });
         }
 
         window.onload = initApp;
