@@ -213,7 +213,6 @@
 
                 // Особый вывод для воркшопа
                 if (currentSectionId === 'workshop') {
-                    // Заголовок один раз
                     talksListEl.innerHTML = `
                         <div class="talk-card workshop-card">
                             <div class="talk-title">Список приглашённых к участию</div>
@@ -230,14 +229,17 @@
                 let html = '';
 
                 if (days.length === 0) {
+                    // Если дней нет (например, открытие), просто выводим все карточки
                     filteredTalks.forEach(talk => {
                         const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                        const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
                         html += `
                             <div class="talk-card">
                                 ${timeHtml}
                                 <div class="talk-title">${talk.title}</div>
                                 ${speakerHtml}
+                                ${formatHtml}
                             </div>
                         `;
                     });
@@ -256,11 +258,13 @@
                                 roomTalks.forEach(talk => {
                                     const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                     const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                                    const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
                                     html += `
                                         <div class="talk-card">
                                             ${timeHtml}
                                             <div class="talk-title">${talk.title}</div>
                                             ${speakerHtml}
+                                            ${formatHtml}
                                         </div>
                                     `;
                                 });
@@ -270,11 +274,13 @@
                             dayTalks.forEach(talk => {
                                 const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                                 const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
+                                const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
                                 html += `
                                     <div class="talk-card">
                                         ${timeHtml}
                                         <div class="talk-title">${talk.title}</div>
                                         ${speakerHtml}
+                                        ${formatHtml}
                                     </div>
                                 `;
                             });
