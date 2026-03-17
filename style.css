@@ -11,6 +11,28 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+/* Кнопка гамбургера (видна только на мобильных) */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    background: #0F2D69;
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(15, 45, 105, 0.3);
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 .app {
@@ -24,6 +46,26 @@ body {
     overflow: hidden;
 }
 
+/* Затемняющий фон для мобильного меню */
+.menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .sidebar {
     width: 280px;
     background: #ffffff;
@@ -31,6 +73,23 @@ body {
     padding: 28px 16px;
     overflow-y: auto;
     position: relative;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 4px 8px;
 }
 
 .sidebar h2 {
@@ -145,6 +204,47 @@ body {
     overflow-y: auto;
 }
 
+/* Шапка конференции */
+.conference-header {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(15, 45, 105, 0.15);
+    text-align: center;
+}
+
+.header-title {
+    font-size: 18px;
+    color: #4a5b6f;
+    margin-bottom: 6px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+.header-name {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0F2D69;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.header-org {
+    font-size: 18px;
+    color: #2d4b6e;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.header-date {
+    font-size: 18px;
+    color: #0F2D69;
+    font-weight: 500;
+    background: rgba(15, 45, 105, 0.05);
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 40px;
+}
+
 .section-title {
     font-size: 32px;
     font-weight: 600;
@@ -154,6 +254,7 @@ body {
     padding-bottom: 12px;
 }
 
+/* Дата как адрес */
 .section-date {
     font-size: 16px;
     color: #0F2D69;
@@ -176,6 +277,7 @@ body {
     display: inline-block;
 }
 
+/* Контейнер фильтров */
 .filters-container {
     margin: 20px 0;
 }
@@ -237,13 +339,15 @@ body {
 }
 
 .section-special-time {
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     color: #0F2D69;
-    background: rgba(15, 45, 105, 0.05);
-    padding: 6px 12px;
-    border-radius: 30px;
+    background: rgba(15, 45, 105, 0.1);
+    padding: 12px 20px;
+    border-radius: 40px;
+    margin-bottom: 25px;
     display: inline-block;
+    border: 1px solid rgba(15, 45, 105, 0.2);
 }
 
 .talks-list {
@@ -320,7 +424,42 @@ body {
     font-weight: 500;
 }
 
-/* Воркшоп */
+/* Красивый онлайн-формат */
+.talk-format {
+    font-size: 12px;
+    color: #0F2D69;
+    background: #e8edf9;
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border: 1px solid rgba(15, 45, 105, 0.2);
+}
+
+/* Примечание (для грантов и т.п.) */
+.talk-note {
+    font-size: 12px;
+    color: #8B5A2B;
+    background: #faf0e6;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 30px;
+    margin-top: 8px;
+    font-weight: 400;
+    border: 1px solid #e6d5b8;
+    font-style: italic;
+}
+
+.placeholder {
+    color: #8f9fb1;
+    font-style: italic;
+    padding: 40px 0;
+    text-align: center;
+}
+
+/* Стили для воркшопа */
 .workshop-card {
     background: white;
     padding: 22px 26px;
@@ -344,57 +483,103 @@ body {
     border-bottom: none;
 }
 
-.talk-format {
-    font-size: 12px;
-    color: #0F2D69;
-    background: #e8edf9;
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-top: 8px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    border: 1px solid rgba(15, 45, 105, 0.2);
-}
-
-.talk-note {
-    font-size: 12px;
-    color: #8B5A2B;
-    background: #faf0e6;
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 30px;
-    margin-top: 8px;
-    font-weight: 400;
-    border: 1px solid #e6d5b8;
-    font-style: italic;
-}
-
+/* Мобильная версия */
 @media (max-width: 700px) {
-    .app { 
-        flex-direction: column; 
-        height: auto; 
-        max-height: 95vh;
+    body {
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
     }
-    .sidebar { 
-        width: 100%; 
-        max-height: 250px;
-        overflow-y: auto;
-        border-right: none; 
-        border-bottom: 1px solid #ddd; 
+    
+    .mobile-menu-toggle {
+        display: flex;
     }
+    
+    .app {
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 85%;
+        max-width: 320px;
+        z-index: 1000;
+        transform: translateX(-100%);
+        border-right: 1px solid #ddd;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        padding: 20px 16px;
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .sidebar-header {
+        display: flex;
+    }
+    
+    .sidebar h2 {
+        margin-bottom: 16px;
+        padding-left: 0;
+    }
+    
     .main {
-        padding: 20px;
+        padding: 60px 16px 20px;
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
     }
+    
+    .conference-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+    }
+    
+    .header-name {
+        font-size: 24px;
+    }
+    
+    .header-title {
+        font-size: 16px;
+    }
+    
+    .header-org, .header-date {
+        font-size: 16px;
+    }
+    
     .section-title {
-        font-size: 26px;
+        font-size: 24px;
+        margin-top: 0;
     }
+    
     .day-filters, .room-filters {
         flex-wrap: nowrap;
         overflow-x: auto;
         padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
     }
+    
     .filter-btn {
         white-space: nowrap;
+        flex-shrink: 0;
+    }
+    
+    .talk-card {
+        padding: 16px 18px;
+    }
+    
+    .talk-title {
+        font-size: 18px;
+    }
+    
+    .global-search-container {
+        margin-top: 10px;
     }
 }
