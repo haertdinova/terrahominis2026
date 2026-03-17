@@ -2,14 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Программа конференции TERRA HOMINIS – 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>TERRA HOMINIS – 2026</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Кнопка гамбургера для мобильных -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+    
     <div class="app">
-        <div class="sidebar">
-            <h2>📋 Секции</h2>
+        <!-- Затемняющий фон при открытом меню -->
+        <div class="menu-overlay" id="menuOverlay"></div>
+        
+        <!-- Боковое меню -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>📋 Секции</h2>
+                <button class="close-menu" id="closeMenu">✕</button>
+            </div>
             <!-- Глобальный поиск -->
             <div class="global-search-container">
                 <input type="text" id="globalSearchInput" class="global-search-input" placeholder="🔍 Поиск по всей программе...">
@@ -17,10 +27,19 @@
             </div>
             <ul class="sections-list" id="sectionsList"></ul>
         </div>
+        
         <div class="main">
+            <!-- Шапка конференции -->
+            <div class="conference-header">
+                <div class="header-title">IV научная конференция студентов, аспирантов и молодых исследователей</div>
+                <div class="header-name">«TERRA HOMINIS – 2026»</div>
+                <div class="header-org">Факультет гуманитарных наук НИУ ВШЭ</div>
+                <div class="header-date">8–9 апреля 2026 г.</div>
+            </div>
+
             <div class="section-title" id="sectionTitle">Выберите секцию</div>
             
-            <!-- Дата и адрес -->
+            <!-- Дата и адрес секции -->
             <div class="section-date" id="sectionDate"></div>
             <div class="section-location" id="sectionLocation"></div>
             
@@ -62,6 +81,44 @@
             const globalSearchResults = document.getElementById('globalSearchResults');
             const dayFiltersEl = document.getElementById('dayFilters');
             const roomFiltersEl = document.getElementById('roomFilters');
+            
+            // Элементы мобильного меню
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const closeMenu = document.getElementById('closeMenu');
+            const sidebar = document.getElementById('sidebar');
+            const menuOverlay = document.getElementById('menuOverlay');
+
+            // Функции открытия/закрытия меню
+            function openMobileMenu() {
+                sidebar.classList.add('open');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                sidebar.classList.remove('open');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            // Обработчики для мобильного меню
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', openMobileMenu);
+            }
+            if (closeMenu) {
+                closeMenu.addEventListener('click', closeMobileMenu);
+            }
+            if (menuOverlay) {
+                menuOverlay.addEventListener('click', closeMobileMenu);
+            }
+
+            // Закрывать меню при выборе секции на мобильных
+            function handleSectionClick(sectionId) {
+                showSection(sectionId);
+                if (window.innerWidth <= 700) {
+                    closeMobileMenu();
+                }
+            }
 
             let currentSectionId = null;
             let currentTalks = [];
@@ -126,6 +183,10 @@
                 globalSearchInput.value = '';
                 globalSearchResults.innerHTML = '';
                 globalSearchResults.style.display = 'none';
+                
+                if (window.innerWidth <= 700) {
+                    closeMobileMenu();
+                }
             });
 
             // ---------- Фильтры по дням ----------
@@ -211,7 +272,7 @@
                     return;
                 }
 
-                // Воркшоп
+                // Особый вывод для воркшопа
                 if (currentSectionId === 'workshop') {
                     talksListEl.innerHTML = `
                         <div class="talk-card workshop-card">
@@ -229,7 +290,8 @@
                 let html = '';
 
                 if (days.length === 0) {
-                        filteredTalks.forEach(talk => {
+                    // Если дней нет (например, открытие), просто выводим все карточки
+                    filteredTalks.forEach(talk => {
                         const timeHtml = (talk.time && !section.specialTime) ? `<div class="talk-time">⏰ ${talk.time}</div>` : '';
                         const speakerHtml = talk.speaker ? `<div class="talk-speaker">👤 ${talk.speaker}</div>` : '';
                         const formatHtml = talk.format ? `<div class="talk-format">🌐 ${talk.format}</div>` : '';
@@ -329,7 +391,7 @@
 
             function buildMenu() {
                 sectionsListEl.innerHTML = sections.map(s => `
-                    <li class="section-item" data-section-id="${s.id}" onclick="showSection('${s.id}')">
+                    <li class="section-item" data-section-id="${s.id}" onclick="handleSectionClick('${s.id}')">
                         <span class="section-icon">${s.icon}</span> ${s.name}
                     </li>
                 `).join('');
@@ -339,6 +401,13 @@
             searchInput.addEventListener('input', renderTalks);
 
             buildMenu();
+
+            // Закрывать меню при изменении размера окна
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 700) {
+                    closeMobileMenu();
+                }
+            });
         }
 
         window.onload = initApp;
