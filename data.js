@@ -1,4 +1,3 @@
-// Секции конференции (19 шт.)
 const sections = [
     {
         id: 'opening',
